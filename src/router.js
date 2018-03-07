@@ -5,12 +5,12 @@ import {
   Switch
 } from 'react-router-dom'
 
-import Login from './pages/Login'
+import Dashboard from './pages/dashboard'
 
 export default () => (
   <Router basename="/tmonitor">
     <Switch>
-      <Route path='/login' component={Login} />
+      <Route path='/' component={Dashboard} />
     </Switch>
   </Router>
 )

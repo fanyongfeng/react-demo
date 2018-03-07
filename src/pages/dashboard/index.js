@@ -6,10 +6,12 @@ import Whiteboard from '@components/whiteboard';
 
 import { Layout } from 'antd';
 
+import { addPath } from '@store/actions/zrender';
+
 import './index.less';
 
 const actionCreators = {
-
+  addPath
 };
 @connect(({ zrender }) => ({
   zrender,
@@ -18,12 +20,17 @@ class Dashboard extends Component {
 
   render () {
     const { Header, Content } = Layout;
+    const { zrender, addPath } = this.props;
+    const whiteboardProps = {
+      addPath,
+      renderList: zrender.list
+    }
     return (
       <div className="dashboard">
         <Layout>
           <Header><div className="dashboard-title">画板</div></Header>
           <Content>
-            <Whiteboard />
+            <Whiteboard {...whiteboardProps}/>
           </Content>
         </Layout>
       </div>

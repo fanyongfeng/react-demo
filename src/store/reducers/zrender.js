@@ -7,7 +7,8 @@ const initialState = {
 
 const room = {
   [actionTypes.ADD_RENDER_ITEM](state, { payload }) {
-    return {...state, list: payload.roomList}
+    const list = [...state.list, payload.path];
+    return {...state, list}
   },
 };
 
