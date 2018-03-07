@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import zrender from 'zrender';
 import PropTypes from 'prop-types';
 import tools from './tools';
-import difference from 'lodash/difference'
+import difference from 'lodash/difference';
+import find from 'lodash/find';
 import './index.less';
 
 class Whiteboard extends Component {
@@ -10,6 +11,7 @@ class Whiteboard extends Component {
   componentDidMount = () => {
     const container = document.querySelector('.zrender-wrapper');
     const Zrender = zrender.init(container);
+    this.getZrenderOffset();
     this.setState({
       Zrender,
     });
@@ -32,14 +34,22 @@ class Whiteboard extends Component {
     });
   }
 
+  getZrenderOffset = () => {
+    const offsetInfo = this.$zrender.getBoundingClientRect();
+    this.setState({
+      offsetLeft: offsetInfo.left,
+      offsetTop: offsetInfo.top,
+    });
+  }
+
   componentWillUpdate(nextProps, nextState) {
     const { renderList } = this.props;
 
     if (renderList !== nextProps.renderList) {
       const addPaths = difference(nextProps.renderList, renderList);
-      const deletePaths = difference(renderList, nextProps.renderList)
+      const deletePaths = difference(renderList, nextProps.renderList);
       this.renderPath(addPaths);
-      this.deletePath(deletePaths)
+      this.deletePath(deletePaths);
     }
   }
 
@@ -51,25 +61,35 @@ class Whiteboard extends Component {
     paths.map((path) => this.state.Zrender.remove(path));
   }
 
+  /**
+   * 鼠标移动的时候命中 path item
+   */
   handleMoveOnCanvas = (event) => {
-
+    const { offsetLeft, offsetTop, isMousedown } = this.state;
+    if (isMousedown) return false;
+    const { renderList } = this.props;
+    const point = {x: event.pageX - offsetLeft, y: event.pageY - offsetTop};
+    const shotPath = find(renderList, (path) => path.contain(point.x, point.y));
+    if (shotPath) {
+      // this.props.deletePath(shotPath.id);
+    }
   }
 
   render() {
+    const zrenderProps = {
+      onMouseMove: this.handleMoveOnCanvas,
+      ref: ref => this.$zrender = ref
+    }
     return (
-      <div className="zrender-wrapper" onMouseMove={this.handleMoveOnCanvas}>
+      <div className="zrender-wrapper" {...zrenderProps}>
       </div>   
     )
   }
 };
 
-Whiteboard.defaultProps = {
-  addPath: () => {},
-  renderList: []
-}
-
 Whiteboard.propTypes = {
   addPath: PropTypes.func.isRequired,
+  deletePath: PropTypes.func.isRequired,
   renderList: PropTypes.array.isRequired
 }
 

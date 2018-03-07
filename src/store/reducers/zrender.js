@@ -8,7 +8,12 @@ const initialState = {
 const room = {
   [actionTypes.ADD_RENDER_ITEM](state, { payload }) {
     const list = [...state.list, payload.path];
-    return {...state, list}
+    return {...state, list};
+  },
+  [actionTypes.DELETE_RENDER_ITEM](state, { payload }) {
+    debugger
+    const list = state.list.filter((path) => path.id !== payload.id);
+    return {...state, list};
   },
 };
 

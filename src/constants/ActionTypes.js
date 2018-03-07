@@ -1,2 +1,4 @@
 
 export const ADD_RENDER_ITEM = 'ADD_RENDER_ITEM';
+
+export const DELETE_RENDER_ITEM = 'DELETE_RENDER_ITEM';

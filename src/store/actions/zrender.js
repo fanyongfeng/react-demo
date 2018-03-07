@@ -1,5 +1,5 @@
 import {
-  ADD_RENDER_ITEM
+  ADD_RENDER_ITEM, DELETE_RENDER_ITEM
 } from '@constants/ActionTypes';
 
 export const addPath = (path) => ({
@@ -7,4 +7,11 @@ export const addPath = (path) => ({
   payload: {
     path
   }
-})
+});
+
+export const deletePath = (id) => ({
+  type: DELETE_RENDER_ITEM,
+  payload: {
+    id
+  }
+});
