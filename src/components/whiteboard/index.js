@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import zrender from 'zrender';
 import PropTypes from 'prop-types';
-import tools from './tools';
 import difference from 'lodash/difference';
 import find from 'lodash/find';
+
+import TOOL from '@constants/tools';
+import tools from './tools';
 import './index.less';
 
 class Whiteboard extends Component {
@@ -29,7 +31,7 @@ class Whiteboard extends Component {
       const path = tools.creatPath({
         endPoint: e.event,
         beiginPoint: this.state.mouseDownInfo
-      });
+      }, TOOL.CIRCLE);
       this.props.addPath(path);
     });
   }
