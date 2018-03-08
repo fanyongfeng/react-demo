@@ -13,14 +13,24 @@ class Tools {
         return this.renderRectangle(info);
       case TOOL.CIRCLE:
         return this.renderCircle(info);
-      
       default:
       return null;
     }
   }
 
   renderCircle = ({beiginPoint, endPoint}) => {
-    const radius = 
+    const radius = Math.sqrt(Math.pow(endPoint.zrX - beiginPoint.zrX, 2) + Math.pow(endPoint.zrY - beiginPoint.zrY, 2))/2;
+    const isDown = endPoint.zrY - beiginPoint.zrY > 0;
+    const isLeft = endPoint.zrX - beiginPoint.zrX > 0;
+    const width = Math.abs(endPoint.zrX - beiginPoint.zrX);
+    const height = Math.abs(endPoint.zrY - beiginPoint.zrY);
+    return new Circle({
+      shape: {
+        cx: isLeft ? beiginPoint.zrX + width/2 : beiginPoint.zrX - width/2,
+        cy: isDown ? beiginPoint.zrY + height/2 : beiginPoint.zrY - height/2,
+        r: radius
+      }
+    })
   }
 
   renderRectangle = ({beiginPoint, endPoint}) => { //还要判断方向来决定起点

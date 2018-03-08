@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import zrender from 'zrender';
 import PropTypes from 'prop-types';
 import difference from 'lodash/difference';
@@ -11,8 +11,7 @@ import './index.less';
 class Whiteboard extends Component {
 
   componentDidMount = () => {
-    const container = document.querySelector('.zrender-wrapper');
-    const Zrender = zrender.init(container);
+    const Zrender = zrender.init(this.$zrenderActive);
     this.getZrenderOffset();
     this.setState({
       Zrender,
@@ -37,7 +36,7 @@ class Whiteboard extends Component {
   }
 
   getZrenderOffset = () => {
-    const offsetInfo = this.$zrender.getBoundingClientRect();
+    const offsetInfo = this.$zrenderActive.getBoundingClientRect();
     this.setState({
       offsetLeft: offsetInfo.left,
       offsetTop: offsetInfo.top,
@@ -80,11 +79,15 @@ class Whiteboard extends Component {
   render() {
     const zrenderProps = {
       onMouseMove: this.handleMoveOnCanvas,
-      ref: ref => this.$zrender = ref
+      ref: ref => this.$zrenderActive = ref
     }
     return (
-      <div className="zrender-wrapper" {...zrenderProps}>
-      </div>   
+      <div className="zrender-layer">
+        <div className="zrender-layer-active" {...zrenderProps}>
+        </div>  
+        <div className="zrender-layer-quiet" {...zrenderProps}>
+        </div>  
+      </div>
     )
   }
 };
