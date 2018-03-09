@@ -1,4 +1,5 @@
 import { Line } from 'zrender';
+import TOOLS from '@constants/tools';
 import Tool from './base';
 
 class TmLine extends Tool {
@@ -6,6 +7,15 @@ class TmLine extends Tool {
   constructor(options) {
     super(options);
     this.style = {...this.style, lineWidth: 1};
+    this.code = TOOLS.LINE;
+  }
+
+  handleMouseDown(e) {
+
+  }
+
+  handleMouseUp(e) {
+
   }
 
   draw({beiginPoint, endPoint}, zlevel = 0) {

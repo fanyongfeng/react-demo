@@ -16,29 +16,37 @@ class Whiteboard extends Component {
     this.setState({
       Zrender,
     });
-    this.tool = new Tools({
+    this.tools = new Tools({
       style: {
         fill: "transparent",
         stroke: '#DC143C',
         lineWidth: 1,
         cursor: 'move'
-      }
+      },
+      addPath: this.props.add,
+      deletePath: this.props.deletePath
     });
+    this.tools.setCurrentTool(TOOL.CIRCLE);
+    this.currentTool = this.tools.currentTool;
     Zrender.on('mousedown', (e) => { //执行currentTool 的事件
       this.setState({
         isMousedown: true,
         mouseDownInfo: e.event
       });
+
+      this.currentTool.handleMouseDown(e); 
     });
     Zrender.on('mouseup', (e) => {
       this.setState({
         isMousedown: false,
         mouseUpInfo: e.event
       });
-      const path = this.tool.creatPath({
+
+      this.currentTool.handleMouseUp(e.event); 
+      const path = this.currentTool.draw({
         endPoint: e.event,
         beiginPoint: this.state.mouseDownInfo
-      }, TOOL.LINE);
+      });
       this.lastGuide && this.props.deletePath(this.lastGuide.id)
       this.props.addPath(path);
     });
@@ -58,16 +66,16 @@ class Whiteboard extends Component {
     if (renderList !== nextProps.renderList) {
       const addPaths = difference(nextProps.renderList, renderList);
       const deletePaths = difference(renderList, nextProps.renderList);
-      this.renderPath(addPaths);
-      this.deletePath(deletePaths);
+      this.renderPaths(addPaths);
+      this.deletePaths(deletePaths);
     }
   }
 
-  renderPath = (paths) => {
+  renderPaths = (paths) => {
     paths.map((path) => this.state.Zrender.add(path));
   }
 
-  deletePath = (paths) => {
+  deletePaths = (paths) => {
     paths.map((path) => this.state.Zrender.remove(path));
   }
 
@@ -81,6 +89,7 @@ class Whiteboard extends Component {
       this.handleDragMoveOnCanvas(e)
       return false;
     };
+    this.currentTool.handleMouseMove(e); 
     const { renderList } = this.props;
     const shotPath = find(renderList, (path) => path.contain(point.zrX, point.zrY));
     if (shotPath) {
@@ -91,10 +100,11 @@ class Whiteboard extends Component {
   handleDragMoveOnCanvas(e) {
     const { offsetLeft, offsetTop } = this.state;
     const point = {zrX: e.pageX - offsetLeft, zrY: e.pageY - offsetTop};
-    const path = this.tool.creatGuide({
+    this.currentTool.handleMouseDrag(e); 
+    const path = this.currentTool.drawGuide({
       endPoint: point,
       beiginPoint: this.state.mouseDownInfo
-    }, TOOL.LINE);
+    });
     if (this.lastGuide) {
       this.props.deletePath(this.lastGuide.id);
     }

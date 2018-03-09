@@ -1,56 +1,30 @@
 import { Polygon, Rect, Circle } from 'zrender';
 import TOOL from '@constants/tools';
 import TmLine from './line';
+import TmCircle from './circle';
 
 class Tools {
 
   constructor(options) {
     this.tmLine = new TmLine(options);
+    this.tmCircle = new TmCircle(options);
   }
 
-  set currentTool(tool) {
-    this.activeTool = []      //filter
+  setCurrentTool(toolCode) {
+    this.activeTool = [this.tmLine, this.tmCircle].find((tool) => tool.code === toolCode);     //filter
   }
 
-  creatPath(info, currentTool) {
-    switch (currentTool) {
-      case TOOL.LINE: 
-        return this.tmLine.draw(info);
-      case TOOL.TRIANGLE:
-        return this.renderTriangle(info);
-      case TOOL.RECTANGLE: 
-        return this.renderRectangle(info);
-      case TOOL.CIRCLE:
-        return this.renderCircle(info);
-      default:
-      return null;
-    }
+  get currentTool() {
+    return this.activeTool;
   }
 
-  creatGuide(info, currentTool) {
-    switch (currentTool) {
-      case TOOL.LINE: 
-        return this.tmLine.drawGuide(info);
-      default:
-      return null;
-    }
-  }
+  // creatPath(info) {
+  //   this.activeTool.draw(info);
+  // }
 
-
-  renderCircle = ({beiginPoint, endPoint}) => {
-    const radius = Math.sqrt(Math.pow(endPoint.zrX - beiginPoint.zrX, 2) + Math.pow(endPoint.zrY - beiginPoint.zrY, 2))/2;
-    const isDown = endPoint.zrY - beiginPoint.zrY > 0;
-    const isLeft = endPoint.zrX - beiginPoint.zrX > 0;
-    const width = Math.abs(endPoint.zrX - beiginPoint.zrX);
-    const height = Math.abs(endPoint.zrY - beiginPoint.zrY);
-    return new Circle({
-      shape: {
-        cx: isLeft ? beiginPoint.zrX + width/2 : beiginPoint.zrX - width/2,
-        cy: isDown ? beiginPoint.zrY + height/2 : beiginPoint.zrY - height/2,
-        r: radius
-      }
-    })
-  }
+  // creatGuide(info, currentTool) {
+  //   this.activeTool.drawGuide(info);
+  // }
 
   renderRectangle = ({beiginPoint, endPoint}) => { //还要判断方向来决定起点
     const width = Math.abs(endPoint.zrX - beiginPoint.zrX);
@@ -74,17 +48,6 @@ class Tools {
       }
     });
   }
-
-  // renderLine = ({beiginPoint, endPoint}) => {
-  //   return new Line({
-  //     shape: {
-  //       x1: beiginPoint.zrX,
-  //       y1: beiginPoint.zrY,
-  //       x2: endPoint.zrX,
-  //       y2: endPoint.zrY
-  //     }
-  //   })
-  // }
 
 }
 
