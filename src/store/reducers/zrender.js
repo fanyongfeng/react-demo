@@ -11,7 +11,6 @@ const room = {
     return {...state, list};
   },
   [actionTypes.DELETE_RENDER_ITEM](state, { payload }) {
-    debugger
     const list = state.list.filter((path) => path.id !== payload.id);
     return {...state, list};
   },

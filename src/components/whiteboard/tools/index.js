@@ -1,12 +1,21 @@
-import { Line, Polygon, Rect, Circle } from 'zrender';
+import { Polygon, Rect, Circle } from 'zrender';
 import TOOL from '@constants/tools';
+import TmLine from './line';
 
 class Tools {
+
+  constructor(options) {
+    this.tmLine = new TmLine(options);
+  }
+
+  set currentTool(tool) {
+    this.activeTool = []      //filter
+  }
 
   creatPath(info, currentTool) {
     switch (currentTool) {
       case TOOL.LINE: 
-        return this.renderLine(info);
+        return this.tmLine.draw(info);
       case TOOL.TRIANGLE:
         return this.renderTriangle(info);
       case TOOL.RECTANGLE: 
@@ -17,6 +26,16 @@ class Tools {
       return null;
     }
   }
+
+  creatGuide(info, currentTool) {
+    switch (currentTool) {
+      case TOOL.LINE: 
+        return this.tmLine.drawGuide(info);
+      default:
+      return null;
+    }
+  }
+
 
   renderCircle = ({beiginPoint, endPoint}) => {
     const radius = Math.sqrt(Math.pow(endPoint.zrX - beiginPoint.zrX, 2) + Math.pow(endPoint.zrY - beiginPoint.zrY, 2))/2;
@@ -56,17 +75,17 @@ class Tools {
     });
   }
 
-  renderLine = ({beiginPoint, endPoint}) => {
-    return new Line({
-      shape: {
-        x1: beiginPoint.zrX,
-        y1: beiginPoint.zrY,
-        x2: endPoint.zrX,
-        y2: endPoint.zrY
-      }
-    })
-  }
+  // renderLine = ({beiginPoint, endPoint}) => {
+  //   return new Line({
+  //     shape: {
+  //       x1: beiginPoint.zrX,
+  //       y1: beiginPoint.zrY,
+  //       x2: endPoint.zrX,
+  //       y2: endPoint.zrY
+  //     }
+  //   })
+  // }
 
 }
 
-export default new Tools();
+export default Tools;

@@ -1,11 +1,11 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import zrender from 'zrender';
 import PropTypes from 'prop-types';
 import difference from 'lodash/difference';
 import find from 'lodash/find';
 
 import TOOL from '@constants/tools';
-import tools from './tools';
+import Tools from './tools';
 import './index.less';
 
 class Whiteboard extends Component {
@@ -16,7 +16,15 @@ class Whiteboard extends Component {
     this.setState({
       Zrender,
     });
-    Zrender.on('mousedown', (e) => {
+    this.tool = new Tools({
+      style: {
+        fill: "transparent",
+        stroke: '#DC143C',
+        lineWidth: 1,
+        cursor: 'move'
+      }
+    });
+    Zrender.on('mousedown', (e) => { //执行currentTool 的事件
       this.setState({
         isMousedown: true,
         mouseDownInfo: e.event
@@ -27,10 +35,11 @@ class Whiteboard extends Component {
         isMousedown: false,
         mouseUpInfo: e.event
       });
-      const path = tools.creatPath({
+      const path = this.tool.creatPath({
         endPoint: e.event,
         beiginPoint: this.state.mouseDownInfo
-      }, TOOL.CIRCLE);
+      }, TOOL.LINE);
+      this.lastGuide && this.props.deletePath(this.lastGuide.id)
       this.props.addPath(path);
     });
   }
@@ -65,27 +74,42 @@ class Whiteboard extends Component {
   /**
    * 鼠标移动的时候命中 path item
    */
-  handleMoveOnCanvas = (event) => {
+  handleMoveOnCanvas = (e) => {  //执行现在工具的事件
     const { offsetLeft, offsetTop, isMousedown } = this.state;
-    if (isMousedown) return false;
+    const point = {zrX: e.pageX - offsetLeft, zrY: e.pageY - offsetTop};
+    if (isMousedown) {
+      this.handleDragMoveOnCanvas(e)
+      return false;
+    };
     const { renderList } = this.props;
-    const point = {x: event.pageX - offsetLeft, y: event.pageY - offsetTop};
-    const shotPath = find(renderList, (path) => path.contain(point.x, point.y));
+    const shotPath = find(renderList, (path) => path.contain(point.zrX, point.zrY));
     if (shotPath) {
       // this.props.deletePath(shotPath.id);
     }
   }
 
+  handleDragMoveOnCanvas(e) {
+    const { offsetLeft, offsetTop } = this.state;
+    const point = {zrX: e.pageX - offsetLeft, zrY: e.pageY - offsetTop};
+    const path = this.tool.creatGuide({
+      endPoint: point,
+      beiginPoint: this.state.mouseDownInfo
+    }, TOOL.LINE);
+    if (this.lastGuide) {
+      this.props.deletePath(this.lastGuide.id);
+    }
+    this.props.addPath(path);
+    this.lastGuide = path;
+  }
+
   render() {
-    const zrenderProps = {
+    const zrenderActiveProps = {
       onMouseMove: this.handleMoveOnCanvas,
       ref: ref => this.$zrenderActive = ref
-    }
+    };
     return (
       <div className="zrender-layer">
-        <div className="zrender-layer-active" {...zrenderProps}>
-        </div>  
-        <div className="zrender-layer-quiet" {...zrenderProps}>
+        <div className="zrender-layer-active" {...zrenderActiveProps}>
         </div>  
       </div>
     )
