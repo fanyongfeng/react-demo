@@ -86,14 +86,14 @@ class Whiteboard extends Component {
     const { offsetLeft, offsetTop, isMousedown } = this.state;
     const point = {zrX: e.pageX - offsetLeft, zrY: e.pageY - offsetTop};
     if (isMousedown) {
-      this.handleDragMoveOnCanvas(e)
+      this.handleDragMoveOnCanvas(e);
       return false;
     };
     this.currentTool.handleMouseMove(e); 
     const { renderList } = this.props;
     const shotPath = find(renderList, (path) => path.contain(point.zrX, point.zrY));
     if (shotPath) {
-      // this.props.deletePath(shotPath.id);
+      this.props.deletePath(shotPath.id);
     }
   }
 

@@ -32,11 +32,11 @@ class TmCircle extends Tool {
       },
       style: this.style,
       zlevel
-    })
+    });
   }
 
   drawGuide (info) {
-    return this.draw(info, 1)
+    return this.draw(info, 1);
   }
 }
 
