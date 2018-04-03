@@ -7,6 +7,7 @@ import find from 'lodash/find';
 import TOOL from '@constants/tools';
 import Tools from './tools';
 import './index.less';
+import Selector from './selector';
 
 class Whiteboard extends Component {
 
@@ -93,7 +94,7 @@ class Whiteboard extends Component {
     const { renderList } = this.props;
     const shotPath = find(renderList, (path) => path.contain(point.zrX, point.zrY));
     if (shotPath) {
-      this.props.deletePath(shotPath.id);
+      // this.props.deletePath(shotPath.id); //删除
     }
   }
 
@@ -119,6 +120,9 @@ class Whiteboard extends Component {
     };
     return (
       <div className="zrender-layer">
+        <div className="render-tool">
+          <Selector />
+        </div>
         <div className="zrender-layer-active" {...zrenderActiveProps}>
         </div>  
       </div>

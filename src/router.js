@@ -5,12 +5,13 @@ import {
   Switch
 } from 'react-router-dom'
 
-import Dashboard from './pages/dashboard'
+import Dashboard from './pages/dashboard';
+import VideoTest from './pages/videoTest';
 
 export default () => (
   <Router basename="/tmonitor">
     <Switch>
-      <Route path='/' component={Dashboard} />
+      <Route path='/' component={VideoTest} />
     </Switch>
   </Router>
 )
