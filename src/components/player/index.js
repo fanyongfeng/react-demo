@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import videojs from 'video.js';
-import swf from '@assets/swf/video-js.swf';
 import 'videojs-flash';
+import swf from '@assets/swf/video-js.swf';
+
 import './index.less';
 
 class Player extends Component {
@@ -9,7 +10,7 @@ class Player extends Component {
   state = {
     videoOptions: {
       sources: [{
-        src: 'http://livestream01.tutormeetplus.com/stage/2018040316971231_000287_ZTf3SIAL_ATJSpz.flv',
+        src: this.props.url,
         type: 'video/x-flv'
       }],
       preload: 'auto',
@@ -18,14 +19,22 @@ class Player extends Component {
       fluid: true,
       aspectRatio: '4:3',
       controls: false,
-      flash: {
-        swf
-      }
+      durationDisplay: false,
+      // flash: {
+      //   swf
+      // }
     }
   }
 
+  componentDidUpdate(preProps) {
+    if (preProps.url !== this.props.url) {
+      this.player && this.player.reset();
+      this.player && this.player.src(this.props.url);
+    }
+  } 
+
   componentDidMount() {
-    this.player = videojs(this.videoNode, this.state.videoOptions, function onPlayerReady() {
+    this.player = videojs('my-player', this.state.videoOptions, function onPlayerReady() {
       this.on('loadeddata', function() {
         console.log('[MediaPlayer] loadeddata');
       });
